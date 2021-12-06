@@ -130,7 +130,7 @@ def facedetect():
     return person-1
         
 def cam():
-    cam = cv2.VideoCapture('rtsp://192.168.43.1:8080/h264_pcm.sdp')
+    cam = cv2.VideoCapture('rtsp://192.168.43.1:8080/h264_pcm.sdp') #ต่อกล้องแบบip camera
     while True:
         sec = time.localtime().tm_sec
         minute = time.localtime().tm_min
