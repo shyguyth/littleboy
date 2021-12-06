@@ -12,6 +12,7 @@ from datetime import datetime
 from glob import glob
 from pyrebase import pyrebase
 
+#config firebase
 config = {'apiKey': "AIzaSyD42YspdSeyDl-1EL5M6cZAhJ2TLcSmXwQ",
   'authDomain': "raspberripi-7acbb.firebaseapp.com",
   'databaseURL': "https://raspberripi-7acbb-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -114,6 +115,7 @@ def date():
     date = datetime.now()
     return date.strftime('%Y.%m.%d.%H.%M')
 
+#นำรูปจากโฟลเดอร์ Allpicture มาหาจำนวนใบหน้า
 def facedetect():
     face_cascade= cv2.CascadeClassifier('face-detect.html')
     for face in sorted(glob(os.path.join('Allpicture','*.jpg'))):
@@ -126,7 +128,7 @@ def facedetect():
             cv2.putText(img,f'person{person}',(x,y-10),cv2.FONT_HERSHEY_TRIPLEX,0.3,(0,200,0),1)
             person+=1
     cv2.putText(img,f'Total person: {person-1}',(20,20),cv2.FONT_HERSHEY_TRIPLEX,0.5,(50,200,0),2)
-    cv2.imwrite(os.path.join('detectpic',os.path.split(face)[-1]),img)
+    cv2.imwrite(os.path.join('detectpic',os.path.split(face)[-1]),img) #เซฟรูปลงโฟลเดอร์ detectpic
     return person-1
         
 def cam():
@@ -145,28 +147,26 @@ def cam():
         else:
             img_name ="{0}.jpg".format(date())
             filename = os.path.join('Allpicture',img_name)
-            cv2.imwrite(filename,frameresize)
-            facedetect()
+            cv2.imwrite(filename,frameresize)  #เซฟรูปลงโฟลเดอร์Allpicture
+            facedetect() #เรียกใช้ฟังชั่นเพื่อหาใบหน้า
             answer_function = str(facedetect())
-            return answer_function + " คน"
+            return answer_function + " คน" #ส่งคำตอบจำนวนใบหน้า
 
-            
     cam.release()
     cam.destroyAllWindows()
         
 
 
-
-
-
+#่รูปล่าสุดในโฟลเดอร์  
 def newest(path):
     files = os.listdir(path)
     paths = [os.path.join(path, basename) for basename in files]
     return max(paths, key=os.path.getctime)
 
+ #เซฟรูปลงfirebase
 def savepic():
     storage = firebase.storage()
-    y =newest('detectpic')
+    y =newest('detectpic')  #รูปล่าสุดในโฟลเดอร์detectpic 
     print(y)
     storage.child('image').put(y)
     url = storage.child("image").get_url(None)
