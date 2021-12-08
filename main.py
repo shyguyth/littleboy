@@ -134,8 +134,6 @@ def facedetect():
 def cam():
     cam = cv2.VideoCapture('rtsp://192.168.43.1:8080/h264_pcm.sdp') #ต่อกล้องแบบip camera
     while True:
-        sec = time.localtime().tm_sec
-        minute = time.localtime().tm_min
         ret, frame = cam.read()
         frameresize = cv2.resize(frame,(1080//3,720//3))
         if not ret:
